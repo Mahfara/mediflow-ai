@@ -10,7 +10,7 @@ warnings.filterwarnings('ignore')
 # ── PAGE CONFIG ───────────────────────────────────────────────────────────────
 st.set_page_config(
     page_title="MediFlow AI — NHS ED Intelligence",
-    page_icon="⚕",
+    page_icon=":hospital:",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -29,7 +29,9 @@ def load_models():
 
 @st.cache_data
 def load_data():
-    df = pd.read_csv(f'{BASE}/nhs5.csv')
+    df1 = pd.read_csv(f'{BASE}/nhs5_part1.csv')
+    df2 = pd.read_csv(f'{BASE}/nhs5_part2.csv')
+    df = pd.concat([df1, df2], ignore_index=True)
     return df
 
 clf, reg, le_dict, FEATURES, meta = load_models()
@@ -212,11 +214,11 @@ with st.sidebar:
     """, unsafe_allow_html=True)
 
     page = st.radio("Navigation", [
-        "📊 Live Dashboard",
-        "🤖 AI Patient Assistant",
-        "🏥 Queue & Predictions",
-        "📈 Data Analytics",
-        "⚙ Model Info"
+        "Live Dashboard",
+        "AI Patient Assistant",
+        "Queue & Predictions",
+        "Data Analytics",
+        "Model Info"
     ], label_visibility="collapsed")
 
     st.markdown("<hr style='border-color:rgba(0,194,160,0.15);margin:1rem 0 0.75rem'>", unsafe_allow_html=True)
@@ -232,8 +234,8 @@ with st.sidebar:
 # ═══════════════════════════════════════════════════════════════════════════════
 # PAGE 1: LIVE DASHBOARD (real data)
 # ═══════════════════════════════════════════════════════════════════════════════
-if page == "📊 Live Dashboard":
-    st.markdown("### 📊 Live Emergency Department Dashboard")
+if page == "Live Dashboard":
+    st.markdown("### Live Emergency Department Dashboard")
     st.caption(f"Powered by real NHS ED dataset · {meta['total_records']:,} patient records · {datetime.now().strftime('%d %b %Y')}")
 
     # Real KPIs from data
@@ -351,8 +353,8 @@ if page == "📊 Live Dashboard":
 # ═══════════════════════════════════════════════════════════════════════════════
 # PAGE 2: AI PATIENT ASSISTANT (core feature — personalised prediction)
 # ═══════════════════════════════════════════════════════════════════════════════
-elif page == "🤖 AI Patient Assistant":
-    st.markdown("### 🤖 AI Patient Assistant — Personalised Triage & Predictions")
+elif page == "AI Patient Assistant":
+    st.markdown("### AI Patient Assistant — Personalised Triage & Predictions")
     st.caption("Enter patient details → real AI model predicts breach risk, wait time, and generates personalised clinical suggestions")
 
     left, right = st.columns([3, 2])
@@ -540,8 +542,8 @@ elif page == "🤖 AI Patient Assistant":
 # ═══════════════════════════════════════════════════════════════════════════════
 # PAGE 3: QUEUE & PREDICTIONS
 # ═══════════════════════════════════════════════════════════════════════════════
-elif page == "🏥 Queue & Predictions":
-    st.markdown("### 🏥 Queue Management & Wait Time Predictions")
+elif page == "Queue & Predictions":
+    st.markdown("### Queue Management & Wait Time Predictions")
     st.caption("Real distribution from your dataset")
 
     # Wait time distribution from actual data
@@ -614,8 +616,8 @@ elif page == "🏥 Queue & Predictions":
 # ═══════════════════════════════════════════════════════════════════════════════
 # PAGE 4: DATA ANALYTICS
 # ═══════════════════════════════════════════════════════════════════════════════
-elif page == "📈 Data Analytics":
-    st.markdown("### 📈 Data Analytics — Real NHS ED Dataset")
+elif page == "Data Analytics":
+    st.markdown("### Data Analytics — Real NHS ED Dataset")
 
     k1, k2, k3, k4 = st.columns(4)
     k1.metric("Total Records", f"{len(df):,}", "Synthetic ECDS-aligned")
@@ -685,8 +687,8 @@ elif page == "📈 Data Analytics":
 # ═══════════════════════════════════════════════════════════════════════════════
 # PAGE 5: MODEL INFO
 # ═══════════════════════════════════════════════════════════════════════════════
-elif page == "⚙ Model Info":
-    st.markdown("### ⚙ Model Information & Architecture")
+elif page == "Model Info":
+    st.markdown("### Model Information & Architecture")
 
     c1, c2, c3, c4 = st.columns(4)
     c1.metric("Breach Model AUC", str(meta['breach_auc']))
@@ -732,3 +734,4 @@ elif page == "⚙ Model Info":
         </div>
     </div>
     """, unsafe_allow_html=True)
+
